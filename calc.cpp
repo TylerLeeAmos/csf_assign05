@@ -44,4 +44,9 @@ vector<string> tokenize(const string &expr) {
 
   return vec;
 }
-  
+
+int evalExpr(const char *expr) {
+  vector<string> parsed_expr = tokenize(expr);
+  // do math? 
+
+}
