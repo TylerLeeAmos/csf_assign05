@@ -11,7 +11,10 @@ struct Calc {
 };
 
 class CalcImpl : public Calc {
+  public:
+    
 
+    int evalExpr(expr, *result);
 
 
   return 0;
@@ -45,8 +48,11 @@ vector<string> tokenize(const string &expr) {
   return vec;
 }
 
-int evalExpr(const char *expr) {
+int evalExpr(const string &expr, int *result) {
   vector<string> parsed_expr = tokenize(expr);
-  // do math? 
+  // do math?
 
+
+
+  return result;
 }
