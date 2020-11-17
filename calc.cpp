@@ -2,22 +2,25 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <map>
+#include <iostream>
+#include <stdlib.h>
 using std::stringstream;
-using std::vector;
+using std::vector; using std::map;
 using std::string;
-
 
 struct Calc {
 };
 
 class CalcImpl : public Calc {
   public:
+    map<string, int> vars;
     
+    // Member Functions
+    int evalExpr(const char *expr, int &result);
 
-    int evalExpr(expr, *result);
 
 
-  return 0;
 
 };
 
@@ -36,7 +39,7 @@ extern "C" int calc_eval(struct Calc *calc, const char *expr, int *result) {
   return obj->evalExpr(expr, *result);
 }
 
-vector<string> tokenize(const string &expr) {
+vector<string> tokenize(const char &expr) {
   vector<string> vec;
   stringstream s(expr);
 
@@ -48,11 +51,13 @@ vector<string> tokenize(const string &expr) {
   return vec;
 }
 
-int evalExpr(const string &expr, int *result) {
-  vector<string> parsed_expr = tokenize(expr);
-  // do math?
-
-
+int CalcImpl::evalExpr(const char *expr, int &result) {
+  vector<string> parsed_expr = tokenize(*expr);
+  string i = parsed_expr[0];
+  string j = parsed_expr[1];
+  std::cout << i << " " << j << std::endl;
+  
+  result = atoi(expr);
 
   return result;
 }
