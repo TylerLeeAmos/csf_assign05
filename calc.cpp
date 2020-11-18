@@ -1,3 +1,5 @@
+// Tyler Amos, Justin Canedy
+// tamos5@jhu.edu, jcanedy1@jhu.edu
 #include "calc.h"
 #include <vector>
 #include <string>
@@ -5,7 +7,6 @@
 #include <map>
 #include <stdlib.h>
 #include <algorithm>
-#include <stack>
 using std::stringstream; using std::stack;
 using std::vector; using std::map;
 using std::string;
@@ -53,7 +54,8 @@ vector<string> tokenize(const char *expr) {
   return vec;
 }
 
-// Given an expression, calculate its result and return it
+// Given an expression, calculate its result
+// return 1 if successful, 0 if error
 int CalcImpl::evalExpr(const char *expr, int &result) {
   vector<string> parsed_expr = tokenize(expr);
   vector<string> remExpr;
@@ -88,6 +90,8 @@ int CalcImpl::evalExpr(const char *expr, int &result) {
     }
     return 1;
   }
+
+  // compute an expression without variables
   result = parsed_eval(parsed_expr, error);
   if (error) {
     return 0;
@@ -127,9 +131,10 @@ int CalcImpl::parsed_eval(vector<string> &expr, bool &error) {
       return 0;
     }
   
-  // check if a variable
+    // check if a variable
     if (validVar(expr[0])) {
       map<string, int>::iterator itr;
+      // search dictionary for variable
       itr = this->vars.find(expr[0]);
       if (itr != this->vars.end()) {
         return itr->second;
@@ -183,10 +188,12 @@ int CalcImpl::parsed_eval(vector<string> &expr, bool &error) {
     } else {
       operands.push_back(atoi(const_cast<char*>(expr[2].c_str())));
     }
-
+    
+    // extract the op as a char
     char* opr = const_cast<char*>(expr[1].c_str());
     char op = opr[0];  
-   
+    
+    // do computation 
     switch(op) {
       case '+':
         return operands[0] + operands[1];
@@ -198,7 +205,8 @@ int CalcImpl::parsed_eval(vector<string> &expr, bool &error) {
         return operands[0] * operands[1];
 
       case '/':
-        if (operands[1] == 0) {
+        // catch divide by 0
+	if (operands[1] == 0) {
 	  error = true;
 	  return 0;
 	} 
@@ -209,6 +217,7 @@ int CalcImpl::parsed_eval(vector<string> &expr, bool &error) {
 	return 0;
     }
   }
+  // if all goes wrong, error
   error = true;
   return 0;
 }

@@ -1,3 +1,5 @@
+// Tyler Amos, Justin Canedy
+// tamos5@jhu.edu, jcanedy1@jhu.edu
 #ifndef CALC_H
 #define CALC_H
 

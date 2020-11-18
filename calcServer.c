@@ -1,3 +1,5 @@
+// Tyler Amos, Justin Canedy
+// tamos5@jhu.edu, jcanedy1@jhu.edu
 #include <stdio.h>      /* for snprintf */
 #include "csapp.h"
 #include "calc.h"
