@@ -7,7 +7,7 @@
 #include <map>
 #include <stdlib.h>
 #include <algorithm>
-using std::stringstream; using std::stack;
+using std::stringstream;
 using std::vector; using std::map;
 using std::string;
 struct Calc {
@@ -103,6 +103,11 @@ int CalcImpl::evalExpr(const char *expr, int &result) {
 bool CalcImpl::validOpnd(string tok) {
   for (int i = 0; i < int(tok.length()); i++) {
     if (!(tok[i] > 47 && tok[i] < 58)) {
+      if (i == 0) {
+        if (tok[i] == 45) {
+	  continue;
+	}
+      }
       return false;
     }
   }
