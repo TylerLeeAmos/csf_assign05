@@ -44,7 +44,7 @@ extern "C" int calc_eval(struct Calc *calc, const char *expr, int *result) {
 }
 
 // Split an expression into tokens
-vector<string> tokenize(const char &expr) {
+vector<string> tokenize(const char *expr) {
   vector<string> vec;
   stringstream s(expr);
 
@@ -58,7 +58,7 @@ vector<string> tokenize(const char &expr) {
 
 // Given an expression, calculate its result and return it
 int CalcImpl::evalExpr(const char *expr, int &result) {
-  vector<string> parsed_expr = tokenize(*expr);
+  vector<string> parsed_expr = tokenize(expr);
   result = atoi(const_cast<char*> (parsed_expr[0].c_str()));
   
   //result = atoi(parsed_expr[0]);
