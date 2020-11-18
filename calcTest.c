@@ -30,11 +30,11 @@ int main(void) {
 	TEST_INIT();
 
 	TEST(testEvalLiteral);
-//	TEST(testAssignment);
+	TEST(testAssignment);
 	TEST(testComputation);
-//	TEST(testComputationAndAssignment);
-//	TEST(testUpdate);
-//	TEST(testInvalidExpr);
+	TEST(testComputationAndAssignment);
+	TEST(testUpdate);
+	TEST(testInvalidExpr);
 
 	TEST_FINI();
 }

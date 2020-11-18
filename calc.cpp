@@ -3,26 +3,23 @@
 #include <string>
 #include <sstream>
 #include <map>
-#include <iostream>
 #include <stdlib.h>
 #include <algorithm>
-using std::stringstream;
+#include <stack>
+using std::stringstream; using std::stack;
 using std::vector; using std::map;
 using std::string;
-using std::cout; using std::endl;
 struct Calc {
 };
 
 class CalcImpl : public Calc {
   public:
     map<string, int> vars;
-    
     // Member Functions
     int evalExpr(const char *expr, int &result);
-
-
-
-
+    int parsed_eval(vector<string> &expr, bool &error);
+    bool validVar(string tok);
+    bool validOpnd(string tok);
 };
 
 // constructor for calculator object
@@ -59,23 +56,25 @@ vector<string> tokenize(const char *expr) {
 // Given an expression, calculate its result and return it
 int CalcImpl::evalExpr(const char *expr, int &result) {
   vector<string> parsed_expr = tokenize(expr);
-  result = atoi(const_cast<char*> (parsed_expr[0].c_str()));
-  
-  //result = atoi(parsed_expr[0]);
-  return result;
-  //int size = int(parsed_expr.size());
-  //result = size;
-  
-  //result = atoi(const_cast<char*>(parsed_expr[2].c_str()));
-  
-
-/*  
+  vector<string> remExpr;
+  bool error = false;
   // handle variable assignment
   if (std::find(parsed_expr.begin(), parsed_expr.end(), "=") != parsed_expr.end()) {
     string var = parsed_expr[0];
-    
+    if (!validVar(var)) {
+      return 0;
+    }
+
     // evaluate expression following declaration
-    result = atoi(const_cast<char*>(parsed_expr[2].c_str()));
+    for (int i = 2; i < int(parsed_expr.size()); i++) {
+      remExpr.push_back(parsed_expr[i]);
+    }
+
+    // evaluate rest of expression to store in variable
+    result = parsed_eval(remExpr, error);
+    if (error) {
+      return 0;
+    }
 
     // declare and set iterator to variable name input
     map<string, int>::iterator itr;
@@ -87,36 +86,108 @@ int CalcImpl::evalExpr(const char *expr, int &result) {
     } else {
       this->vars.insert({var, result});
     }
-    cout << vars[var] << endl;
+    return 1;
   }
-  //result = atoi(expr);
-*/
-  //return result;
+  result = parsed_eval(parsed_expr, error);
+  if (error) {
+    return 0;
+  }
+  return 1;
 }
 
-// Add integer x and integer y
-int add(int x, int y) {
-  return x + y;
+// Check if a valid operand
+bool CalcImpl::validOpnd(string tok) {
+  for (int i = 0; i < int(tok.length()); i++) {
+    if (!(tok[i] > 47 && tok[i] < 58)) {
+      return false;
+    }
+  }
+  return true;
 }
 
-// Subtract integer y from integer x
-int sub(int x, int y) {
-  return x - y;
+// Check if a valid variable
+bool CalcImpl::validVar(string tok) {
+  for (int i = 0; i < int(tok.length()); i++) {
+    if (!(tok[i] > 64 && tok[i] < 91) && !(tok[i] > 96 && tok[i] < 123)) {
+      return false;
+    }
+  }
+  return true;
 }
 
-// Multiply integer x by integer y
-int mult(int x, int y) {
-return x*y;
+// specific arithmetic evaluation
+int CalcImpl::parsed_eval(vector<string> &expr, bool &error) {
+  vector<int> operands;
+  int size = expr.size();
+  // only 1 operand
+  if (size == 1) {
+    // check if valid token
+    if (!validOpnd(expr[0]) && !validVar(expr[0])) { 
+      error = true;
+      return 0;
+    }
+/*
+    // check if a operand
+    if (validOpnd(expr[0])) {
+      return atoi(const_cast<char*>(expr[0].c_str()));
+    }
+  */
+  // check if a variable
+    if (validVar(expr[0])) {
+      map<string, int>::iterator itr;
+      itr = this->vars.find(expr[0]);
+      if (itr != this->vars.end()) {
+        return itr->second;
+      } else {
+        error = true;
+	return 0;
+      }
+    }
+    // if not a variable, return the number
+    return atoi(const_cast<char*>(expr[0].c_str()));
+  }
+
+  // invalid combination
+  if (size == 2) {
+    error = true;
+    return 0;
+  }
+
+  if (size == 3) {
+    if (validOpnd(expr[0]) && validOpnd(expr[2])) {
+      operands.push_back(atoi(const_cast<char*>(expr[0].c_str())));
+      operands.push_back(atoi(const_cast<char*>(expr[2].c_str())));
+    } else {
+      error = true;
+      return 0;
+    }
+    
+    char* opr = const_cast<char*>(expr[1].c_str());
+    char op = opr[0];  
+   
+    switch(op) {
+      case '+':
+        return operands[0] + operands[1];
+    
+      case '-':
+        return operands[0] - operands[1];
+
+      case '*':
+        return operands[0] * operands[1];
+
+      case '/':
+        if (operands[1] == 0) {
+	  error = true;
+	  return 0;
+	} 
+	return operands[0] / operands[1];
+
+      default:
+        error = true;
+	return 0;
+    }
+  }
+  error = true;
+  return 0;
 }
-
-// Divide integer x by integer y
-int divide(int x, int y) {
- return x / y;
-}
-
-
-
-
-
-
 
