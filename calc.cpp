@@ -126,12 +126,7 @@ int CalcImpl::parsed_eval(vector<string> &expr, bool &error) {
       error = true;
       return 0;
     }
-/*
-    // check if a operand
-    if (validOpnd(expr[0])) {
-      return atoi(const_cast<char*>(expr[0].c_str()));
-    }
-  */
+  
   // check if a variable
     if (validVar(expr[0])) {
       map<string, int>::iterator itr;
@@ -152,16 +147,43 @@ int CalcImpl::parsed_eval(vector<string> &expr, bool &error) {
     error = true;
     return 0;
   }
-
+  
+  // full expression
   if (size == 3) {
-    if (validOpnd(expr[0]) && validOpnd(expr[2])) {
-      operands.push_back(atoi(const_cast<char*>(expr[0].c_str())));
-      operands.push_back(atoi(const_cast<char*>(expr[2].c_str())));
-    } else {
+    // check if 1st operand is a variable
+    if (validVar(expr[0])) {
+      map<string, int>::iterator itr;
+      itr = this->vars.find(expr[0]);
+      if (itr != this->vars.end()) {
+        operands.push_back(itr->second);
+      } else {
+        error = true;
+	return 0;
+      }
+    } else if (!validOpnd(expr[0])) { // must be valid opnd then
       error = true;
       return 0;
+    } else {
+      operands.push_back(atoi(const_cast<char*>(expr[0].c_str())));
     }
-    
+
+    // check if 2nd operand is a variable
+    if (validVar(expr[2])) {
+      map<string, int>::iterator itr;
+      itr = this->vars.find(expr[2]);
+      if (itr != this->vars.end()) {
+        operands.push_back(itr->second);
+      } else {
+        error = true;
+	return 0;
+      }
+    } else if (!validOpnd(expr[2])) { // must be valid opnd then
+      error = true;
+      return 0;
+    } else {
+      operands.push_back(atoi(const_cast<char*>(expr[2].c_str())));
+    }
+
     char* opr = const_cast<char*>(expr[1].c_str());
     char op = opr[0];  
    
